@@ -1,8 +1,8 @@
 rm(list = ls())#清空输出
 PATH = getwd()
-setwd(PATH)
-dir = paste(PATH,"/data/",sep="")
-
+dir_fun = paste(PATH,"/analysis_code/",sep="")
+dir = paste(dir_fun,"/data/",sep="")
+setwd(dir_fun)
 maxdist = 110
 
 

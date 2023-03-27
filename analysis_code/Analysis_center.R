@@ -1,7 +1,9 @@
 rm(list = ls())#清空输出
 PATH = getwd()
-dir = paste(PATH,"/data/",sep="")
-setwd(PATH)
+dir_fun = paste(PATH,"/analysis_code/",sep="")
+dir = paste(dir_fun,"/data/",sep="")
+setwd(dir_fun)
+maxdist = 110
 library(xlsx)
 library(readxl)
 library(tidyverse)

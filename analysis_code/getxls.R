@@ -134,27 +134,19 @@ for (i in 1:numbermax){
   matchtable_other = rbind(matchtable_otehr,M_other)
   
 }
-matchtable_11 = matchtable_11[-1]
-matchtable_12 = matchtable_12[-1]
-matchtable_13 = matchtable_13[-1]
-matchtable_22 = matchtable_22[-1]
-matchtable_23 = matchtable_23[-1]
-matchtable_33 = matchtable_33[-1]
+matchtable_hth = matchtable_hth[-1]
+matchtable_hts = matchtable_hts[-1]
+matchtable_sts = matchtable_sts[-1]
+matchtable_other = matchtable_other[-1]
+
+write.xlsx(matchtable_hth, paste(dir,"hth_all.xls",sep=""), append = TRUE)
+write.xlsx(matchtable_hts, paste(dir,"hts_all.xls",sep=""), append = TRUE)
+write.xlsx(matchtable_sts, paste(dir,"sts_all.xls",sep=""), append = TRUE)
+write.xlsx(matchtable_other, paste(dir,"other_all.xls",sep=""), append = TRUE)
 
 
-A = matchtable_22
-#A = matchtable_11
-#A = matchtable_12
-#A = matchtable_13
-#A = matchtable_22
-#A = matchtable_23
-#A = matchtable_33
 
-A[which(A>=90)] <- 180-A[which(A>=90)]
 
-hist(A,breaks = seq(0,100,1),prob = TRUE, main = "parallel")
-
-lines(density(A), col = "red")
 
 
 
