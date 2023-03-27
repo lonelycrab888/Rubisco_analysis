@@ -18,7 +18,6 @@ library(ggplot2)
 library(fpc)
 source('function.R')
 
-
 M <- read.table(paste(dir,"matching_checknew.xls",sep=""),head=FALSE)
 colnames(M) <- c("MicrographName","CoordinateX","CoordinateY",
                  "CoordinateZ","AngleRot","AngleTilt","Angle",
@@ -29,11 +28,13 @@ M$CoordinateZ <- round(M$CoordinateZ, 2)
 M$Angle <- round(M$Angle,3)
 numbermax <- M[nrow(M),8]
 
-matchtable = c(0)
-matchtable_15 = c(0)
-matchtable_45 = c(0)
-matchtable_60 = c(0)
+matchtable_hth = c(0)
+matchtable_hts = c(0)
+matchtable_sts = c(0)
+matchtable_other = c(0)
+
 for (i in 1:numbermax){
+  i = 1
   Mnew <- M[which(M$TomoNumber==i),]
   distxy <- Mnew[,2:3]
   M_cluster <- clustering_xy(distxy , Mnew)
@@ -68,12 +69,13 @@ for (i in 1:numbermax){
   x = nrow(E_mat_new)
   
   #构建全0空矩阵，记录有互作的rubisco间感兴趣的参数
-  match_list <- rep(0,x*x)
-  match_list <- matrix(match_list, nrow = x)
-  match_list_15 <- match_list_45 <- match_list_60 <- match_list 
+  match <- rep(0,x*x)
+  match <- matrix(match_list, nrow = x)
+  Match_hts <- Match_hth <- Match_sts <- Match_other <- match
+  
   
   for (j in 1:x){
-    for(k in 1:x){
+    for(k in j:x){
       if(E_mat_new[j,k]!=0){
         v_j = solveequ(M_new, j)
         v_k = solveequ(M_new, k)
@@ -81,51 +83,76 @@ for (i in 1:numbermax){
         flat_dot_dist1 = dist_flat_dot(M_new, j, k)
         flat_dot_dist2 = dist_flat_dot(M_new, k, j)
         deta = abs(flat_dot_dist1-flat_dot_dist2)
-        # if ((flat_dot_dist1<28&flat_dot_dist2<28)|
-        #    (flat_dot_dist2>65&flat_dot_dist1>65)){
-        #   angle_list[j,k] = anglediff
-        #  }
-        match_list[j,k] = flat_dot_dist1
-        if (anglediff<15|anglediff>165)
-          match_list_15[j,k] = flat_dot_dist1
-        if (anglediff<45|anglediff>135)
-          match_list_45[j,k] = flat_dot_dist1
-        if (anglediff<60|anglediff>120)
-          match_list_60[j,k] = flat_dot_dist1
+        if(flat_dot_dist1<28&flat_dot_dist2<28){
+          if(anglediff<35|anglediff>145){
+            Match_sts[j,k] = 1
+          }
+          else Match_other[j,k] = 1
+        }
+        
+        else if(flat_dot_dist1>65&flat_dot_dist2>65){
+          if(anglediff<35|anglediff>145){
+            Match_hth[j,k] = 1
+          }
+          else Match_other[j,k] = 1
+        }
+        
+        else if((flat_dot_dist1<28&flat_dot_dist2>65)|
+           (flat_dot_dist2<28&flat_dot_dist1>65)){
+          if(anglediff<115|anglediff>65){
+            Match_hts[j,k] = 1
+          }
+          else Match_other[j,k] = 1
+        }
+        else Match_other[j,k] = 1
         
       }
     }
   }
-
-  choose = which(match_list!=0)
-  match_list_all = match_list[choose]
-  matchtable = c(matchtable, match_list_all)
+  Match_hth = t(Match_hth)+Match_hth
   
-  choose_15 = which(match_list_15!=0)
-  match_list_15_all = match_list_15[choose_15]
-  matchtable_15 = c(matchtable_15, match_list_15_all)
+  Match_hts = t(Match_hts)+Match_hts
   
-  choose_45 = which(match_list_45!=0)
-  match_list_45_all = match_list_45[choose_45]
-  matchtable_45 = c(matchtable_45, match_list_45_all)
+  Match_sts = t(Match_sts)+Match_sts
   
-  choose_60 = which(match_list_60!=0)
-  match_list_60_all = match_list_60[choose_60]
-  matchtable_60 = c(matchtable_60, match_list_60_all)
+  Match_other = t(Match_other)+Match_other
+  
+  M_hth= M_new[-which(rowSums(Match_hth)==0),]
+  
+  M_hts= M_new[-which(rowSums(Match_hts)==0),]
+  
+  M_sts = M_new[-which(rowSums(Match_sts)==0),]
+  
+  M_other = M_new[-which(rowSums(Match_other)==0),]
+  
+  matchtable_hth = rbind(matchtable_hth,M_hth)
+  
+  matchtable_hts = rbind(matchtable_hts,M_hts)
+  
+  matchtable_sts = rbind(matchtable_sts,M_sts)
+  
+  matchtable_other = rbind(matchtable_otehr,M_other)
   
 }
-matchtable = matchtable[-1]
-matchtable_15 = matchtable_15[-1]
-matchtable_45 = matchtable_45[-1]
-matchtable_60 = matchtable_60[-1]
-
-A = matchtable
-A = matchtable_15
-A = matchtable_45
-A = matchtable_60
+matchtable_11 = matchtable_11[-1]
+matchtable_12 = matchtable_12[-1]
+matchtable_13 = matchtable_13[-1]
+matchtable_22 = matchtable_22[-1]
+matchtable_23 = matchtable_23[-1]
+matchtable_33 = matchtable_33[-1]
 
 
-hist(A,breaks = seq(0,120,1),prob = TRUE, main = "<60")
+A = matchtable_22
+#A = matchtable_11
+#A = matchtable_12
+#A = matchtable_13
+#A = matchtable_22
+#A = matchtable_23
+#A = matchtable_33
+
+A[which(A>=90)] <- 180-A[which(A>=90)]
+
+hist(A,breaks = seq(0,100,1),prob = TRUE, main = "parallel")
 
 lines(density(A), col = "red")
 
