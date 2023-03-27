@@ -1,8 +1,8 @@
 rm(list = ls())#清空输出
 PATH = getwd()
-setwd(PATH)
-dir = paste(PATH,"/data/",sep="")
-
+dir_fun = paste(PATH,"/analysis_code/",sep="")
+dir = paste(dir_fun,"/data/",sep="")
+setwd(dir_fun)
 maxdist = 110
 
 
@@ -34,7 +34,6 @@ matchtable_sts = c(0)
 matchtable_other = c(0)
 
 for (i in 1:numbermax){
-  i = 1
   Mnew <- M[which(M$TomoNumber==i),]
   distxy <- Mnew[,2:3]
   M_cluster <- clustering_xy(distxy , Mnew)
@@ -70,7 +69,7 @@ for (i in 1:numbermax){
   
   #构建全0空矩阵，记录有互作的rubisco间感兴趣的参数
   match <- rep(0,x*x)
-  match <- matrix(match_list, nrow = x)
+  match <- matrix(match, nrow = x)
   Match_hts <- Match_hth <- Match_sts <- Match_other <- match
   
   
@@ -131,13 +130,14 @@ for (i in 1:numbermax){
   
   matchtable_sts = rbind(matchtable_sts,M_sts)
   
-  matchtable_other = rbind(matchtable_otehr,M_other)
+  matchtable_other = rbind(matchtable_other,M_other)
   
 }
-matchtable_hth = matchtable_hth[-1]
-matchtable_hts = matchtable_hts[-1]
-matchtable_sts = matchtable_sts[-1]
-matchtable_other = matchtable_other[-1]
+matchtable_hth = matchtable_hth[-1,]
+matchtable_hts = matchtable_hts[-1,]
+matchtable_sts = matchtable_sts[-1,]
+matchtable_other = matchtable_other[-1,]
+
 
 write.xlsx(matchtable_hth, paste(dir,"hth_all.xls",sep=""), append = TRUE)
 write.xlsx(matchtable_hts, paste(dir,"hts_all.xls",sep=""), append = TRUE)
