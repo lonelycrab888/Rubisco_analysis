@@ -6,13 +6,13 @@ G = (np.sqrt(5)-1)/2
 #input_l =95
 #l=input_l*10/12.35
 
-l = 68
-#n = math.floor(l/10)-2
+l = 101
+n = math.floor(l/10)-1
 ax = plt.subplot(projection='3d')
 #n0-n:展示第n0层到第n层
-n0 = 7
-n = 7
-
+n0 = 9
+#n = 7
+print(n)
 #xs, ys, zs = getVertex(l).T
 pts = getVertex(l)
 dMat = getDisMat(pts)
@@ -93,11 +93,14 @@ z_values = [point[2] for point in data]
 
 
 
-prob = prob_surface(n)
+prob = new_prob_list(n)[1::]
+prob_new = [1 if x > 1 else x for x in prob]
+for i in range(len(prob_new)):
+    prob_new[i] = 1 - prob_new[i]
+prob= prob_new
 points_all = [[0],[0],[0]]
 
 for i in range(n0-1,n):
-    print(i)
     l_true = l*(i+1)/n-1
     points = cal_surface(l_true, i+1)
     num_points_to_delete = int(len(points[0]) * prob[i])
@@ -114,7 +117,7 @@ y_values = points_all[1]
 z_values = points_all[2]
 
 ax.scatter(x_values, y_values, z_values,  s = [100]*len(x_values), color='blue', marker='o')
-
+"""
 # 创建 XY 平面的网格坐标
 x_flat = y_flat = range(-120, 120)
 X, Y = np.meshgrid(x_flat, y_flat)
@@ -123,20 +126,16 @@ ax.plot_surface(X, Y, Z, color='yellow', alpha=1)
 
 
 
+"""
+
 
 
 
 plt.axis('equal')
 # 设置坐标轴标签
-"""
-
-ax.set_xlabel('X Label')
-ax.set_ylabel('Y Label')
-ax.set_zlabel('Z Label')
-ax.legend([scatter], ['Points'])
-"""
-
 plt.show()
+
+"""
 
 x_fit = np.linspace(1, n, 1000)
 y_fit = new_prob(x_fit,n)
@@ -146,3 +145,5 @@ plt.xlabel("The nth layer")
 plt.ylabel("Y")
 plt.legend()
 plt.show()
+"""
+

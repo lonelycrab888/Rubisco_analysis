@@ -171,9 +171,9 @@ def new_fit(x, x_max):
     y = y*x_max/8
     return y
 def new_fit_true(n, x):
-    x_max = x*1.07
-    x_max = math.ceil(x_max)-1
-    y = new_fit(n,x_max)
+    x_max = x
+    x_max = math.floor(x_max)+1
+    y = new_fit(n,x_max)/0.875
     return y
 
 def new_prob(x, x_max):
@@ -198,10 +198,11 @@ def cal_num_all(x_max):
     for i in range(1,x_max+1):
         all = all+cal_num(i,x_max)
     return all
-
+"""
 def prob_surface(x_max):
     list = []
     for i in range(1,x_max+1):
         num = 10 * i * i - 20 * i + 12
         list.append(1-(cal_num(i,x_max)/num))
     return list
+"""
