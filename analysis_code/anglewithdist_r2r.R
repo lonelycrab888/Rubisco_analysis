@@ -4,7 +4,7 @@ dir_fun = paste(PATH,"/analysis_code/",sep="")
 dir = paste(dir_fun,"/data/",sep="")
 setwd(dir_fun)
 maxdist = 110
-
+dir = "F:/git-load/Rubisco_analysis/analysis_code/data/"
 
 library(xlsx)
 library(readxl)
@@ -143,8 +143,7 @@ matchtable_23 = matchtable_23[-1]
 matchtable_33 = matchtable_33[-1]
 
 
-A = matchtable_22
-#A = matchtable_11
+A = matchtable_11
 #A = matchtable_12
 #A = matchtable_13
 #A = matchtable_22
@@ -153,11 +152,11 @@ A = matchtable_22
 
 A[which(A>=90)] <- 180-A[which(A>=90)]
 
-hist(A,breaks = seq(0,100,1),prob = TRUE, main = "parallel")
+hist(A,breaks = seq(0,100,1),prob = TRUE, main = "(3,3)")
 
 lines(density(A), col = "red")
 
-
+plot(density(A), main = "(3,3)")
 
 
 

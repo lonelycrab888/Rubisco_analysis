@@ -18,6 +18,7 @@ library(ggplot2)
 library(fpc)
 source('function.R')
 
+#M<- read.table("F:/git-load/Rubisco_analysis/analysis_code/data/matching_checknew.xls",header = FALSE)
 
 M <- read.table(paste(dir,"matching_checknew.xls",sep=""),head=FALSE)
 colnames(M) <- c("MicrographName","CoordinateX","CoordinateY",
@@ -121,8 +122,8 @@ matchtable_60 = matchtable_60[-1]
 
 A = matchtable
 A = matchtable_15
-A = matchtable_45
-A = matchtable_60
+#A = matchtable_45
+#A = matchtable_60
 
 
 hist(A,breaks = seq(0,120,1),prob = TRUE, main = "<60")
@@ -130,6 +131,42 @@ hist(A,breaks = seq(0,120,1),prob = TRUE, main = "<60")
 lines(density(A), col = "red")
 
 
+plot(density(A), # x和y坐标
+     type = "l", # 图的类型
+     main = "", # 图的主标题
+     xlab = "Distance(Å)", ylab = "Density", # x、y轴标注
+     ann = TRUE, # 逻辑值，是否使用默认的x、y轴标注注释
+     axes = TRUE, # 逻辑值，是否显示坐标轴， "xaxt" 或 "yaxt" 选择不显示对应坐标轴
+     #frame.plot = axes, # 是否显示图边框
+     #asp = 10000, # y/x 的比例
+     xgap.axis = 0.1, # x轴标签显示的距离
+     ygap.axis = 0.1,# y轴标签显示的距离
+     bty = 'o' # 图边框类型
+     
+)
+
+
+
+A <- data.frame(sort(A))
+colnames(A) <- "distance"
+
+
+
+#pdf("C:/Users/zhr/Desktop/test.pdf",width=10,height=6)
+
+P_density = ggplot(A, aes(x=distance))+ geom_density(size = 0.8)+ theme_classic()+ 
+  scale_x_continuous(expand = c(0, 0),name = "Distance(Å)", limits = c(0,120),
+                     breaks = c(0,30,60,90,120)) + 
+  scale_y_continuous(expand = c(0, 0),name = "Probability Density", limits = c(0,0.02), 
+                     breaks = c(0.005, 0.01,  0.015, 0.02))+
+  theme(
+    axis.title.x = element_text(color="black", size=20),
+    axis.title.y = element_text(color="black", size=20),
+    axis.text.x = element_text(size = 20),
+    axis.text.y = element_text(size = 20),
+    plot.margin=unit(rep(1,4),'cm'))
+print(P_density)
+#dev.off()
 
 
 
@@ -137,6 +174,26 @@ lines(density(A), col = "red")
 
 
 
+length(density(A$distance)$x)
+
+cdf_data <- data.frame(
+  distance = density(A$distance)$x,
+  cdf = cumsum(density(A$distance)$y * diff(density(A$distance)$x))
+)
+
+# Create plot for cumulative distribution function (CDF)
+p_cdf <- ggplot(cdf_data, aes(x = distance, y = cdf)) +
+  geom_line(size = 0.8) +
+  theme_classic() +
+  scale_x_continuous(expand = c(0, 0), name = "Distance(Å)", limits = c(0, 120), breaks = c(0, 30, 60, 90, 120)) +
+  scale_y_continuous(expand = c(0, 0), name = "Cumulative Probability", limits = c(0, 1), breaks = seq(0, 1, by = 0.1)) +
+  theme(
+    axis.title.x = element_text(color = "black", size = 20),
+    axis.title.y = element_text(color = "black", size = 20),
+    axis.text.x = element_text(size = 20),
+    axis.text.y = element_text(size = 20),
+    plot.margin = unit(rep(1, 4), 'cm')
+  )
 
 
 
